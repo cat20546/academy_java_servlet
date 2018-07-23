@@ -1,8 +1,9 @@
-package parameter.post;
+package request;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -10,18 +11,31 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 02_hobby.html에서 발생하는 POST요청을 처리하는 서블릿
+ * Servlet implementation class RegisterServlet
  */
-@WebServlet("/hobby")
-public class HobbyServlet extends HttpServlet {
+@WebServlet("/regist")
+public class RegisterServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * 1. 서버의 리소스 요청을위해서 사용
+	 * 2. 등록화면 요청
 	 */
-	protected void service(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		RequestDispatcher reqd = request.getRequestDispatcher("registForm");
+	
+		// request 한글
+		request.setCharacterEncoding("utf-8");
+		
+		reqd.forward(request, response);
+	}
+
+	/**
+	 * 1. 사용자 데이터를 서버로 전송하기 위해서 사용
+	 * 2. 폼에서 발생한 데이터를 처리하기 위해 사용
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
 
@@ -30,13 +44,15 @@ public class HobbyServlet extends HttpServlet {
 		String username = request.getParameter("username");
 		// (2)<input>동일한name이 두개이상 전달될 경우 String[] 변수로 받는다.
 		String[] hobbies = request.getParameterValues("hobby");
+		String password = request.getParameter("password");
+				
 
 		// 4. 출력
 		// (1) 기본 : sysout 출력
 		System.out.println("등록된 사용자 이름:" + username);
+		System.out.println("등록된 비밀번호:" + password);
 		if (hobbies != null){
 		for (String hobby : hobbies) {
-			System.out.println("등록된 취미:" + hobby);
 		}
 		}else {
 			System.out.println();
@@ -47,6 +63,7 @@ public class HobbyServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		out.println("<HTML><BODY>");
 		out.println("등록된 사용자 이름:" + username + "<br>/");
+		out.println("등록된 사용자 비밀번호:" + password + "<br>/");
 		
 		if (hobbies != null) {
 			for (String hobby : hobbies) {
@@ -59,5 +76,6 @@ public class HobbyServlet extends HttpServlet {
 		out.println("</BDOY></HTML>");
 		out.close();
 	}
-}
+	}
+
 
